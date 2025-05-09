@@ -4,36 +4,33 @@ const input = require("fs")
   .trim()
   .split("\n");
 
-const N = +input.shift();
+let N = +input.shift();
+let graph = Array.from({ length: N + 1 }, () => []);
 
-const info = input.map((ele) => ele.split(" ").map(Number));
+// add edges
+for (let i = 0; i < N - 1; i++) {
+  let [A, B, C] = input[i].split(" ").map(Number);
 
-const graph = {};
-
-for (const [start, end, weight] of info) {
-  if (!graph[start]) {
-    graph[start] = [];
-  }
-  if (!graph[end]) {
-    graph[end] = [];
-  }
-  graph[start].push([end, weight]);
-  graph[end].push([start, weight]);
+  graph[A].push({ to: B, weight: C });
+  graph[B].push({ to: A, weight: C });
 }
 
-let maxLength = 0;
 
-function dfs(node, visited, dist) {
-  maxLength = Math.max(maxLength, dist);
-  visited.add(node);
+let visited = new Array(N + 1).fill(-1);
+let que = [1];
+visited[1] = 0; //누적 거리합
 
-  for (const [next, weight] of graph[node] || []) {
-    if (!visited.has(String(next))) {
-      dfs(String(next), new Set(visited), dist + weight);
+while (que.length !== 0) {
+  let node = que.shift();
+
+  for (let i = 0; i < graph[node].length; i++) {
+    let next = graph[node][i].to;
+
+    if (visited[next] === -1) {
+      visited[next] = graph[node][i].weight + visited[node];
+      que.push(next);
     }
   }
 }
 
-dfs("1", new Set(), 0);
-
-console.log(maxLength);
+console.log(Math.max(...visited));
