@@ -3,18 +3,21 @@ function solution(bridge_length, weight, truck_weights) {
     
     let time = bridge_length;
     
+    let currentBridgeWeight = 0;
+    
     while(truck_weights.length > 0){
-         const totalWeight = bridgeArr.reduce((acc,cur)=> acc+cur) - bridgeArr[0]
-         const current = truck_weights[0];
-         if(totalWeight + current <= weight){
-             bridgeArr.shift();
-             bridgeArr.push(current);
-             truck_weights.shift();
-         }else{
-             bridgeArr.shift();
-             bridgeArr.push(0);
-         }
-        time++;
+        const leaveTruck = bridgeArr.shift();
+        currentBridgeWeight-=leaveTruck;
+        
+        const currentTruck = truck_weights[0]
+        
+        if(currentBridgeWeight + currentTruck <= weight ){
+            currentBridgeWeight += currentTruck;
+            bridgeArr.push(truck_weights.shift());
+        }else{
+            bridgeArr.push(0)
+        }
+        time++
     }
     return time
 }
