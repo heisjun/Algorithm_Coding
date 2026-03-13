@@ -6,7 +6,7 @@ function solution(begin, target, words) {
         for (let i = 0; i < start.length; i++) {
           if (start[i] !== word[i]) {
             diffCount++;
-            if (diffCount > 1) return false; // 더 이상 비교 불필요
+            if (diffCount > 1) return false; 
           }
         }
         return diffCount === 1;
