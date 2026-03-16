@@ -1,28 +1,24 @@
 function solution(n, times) {
     
-    let left = 0;
-    let right = Math.max(...times)*n;
+    let min = 0;
+    let max = Math.max(...times)*n;
     let result = 0;
     
-    while(left <= right){
-        let mid = Math.floor((left+right)/2);
+    while(min <= max){
         let total = 0;
+        let mid = Math.floor((min+max)/2);
         
         times.forEach((time)=>{
-            total += Math.floor(mid/time);
+            total += Math.floor(mid/time)
         })
         
         if(total >= n){
             result = mid;
-            right = mid-1;
+            max = mid - 1;
         }else{
-            
-            left = mid+1;
-            
+            min = mid + 1;
         }
     }
     
-    return result
+    return (result)
 }
-
-
