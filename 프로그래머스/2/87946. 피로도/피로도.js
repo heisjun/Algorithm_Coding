@@ -1,32 +1,25 @@
 function solution(k, dungeons) {
-    let maxDungeons = 0; 
+    let maxDungeon = 0;
     
-    const visited = Array(dungeons.length).fill(false);
+    const visitedArr = Array.from({length:dungeons.length},()=>0);
 
-    function dfs(currentHp, cnt) {
-
-        if (cnt > maxDungeons) {
-            maxDungeons = cnt;
-        }
-
-        for (let i = 0; i < dungeons.length; i++) {
-            
-            const minRequireHp = dungeons[i][0]; // 최소 필요 피로도
-            const consumeHp = dungeons[i][1];    // 소모 피로도
-
-          
-            if (!visited[i] && currentHp >= minRequireHp) {      
-                visited[i] = true; 
-                
-                dfs(currentHp - consumeHp, cnt + 1); 
-                
-                visited[i] = false; 
-            }
-        }
+    
+     function explore(currentHp, visitedCnt){
+         
+         maxDungeon = Math.max(maxDungeon, visitedCnt);
+         
+         for(let i = 0; i < dungeons.length; i++){
+             if(visitedArr[i] === 0 && currentHp >= dungeons[i][0]){
+                 visitedArr[i] = 1;
+                 explore(currentHp - dungeons[i][1], visitedCnt+1)
+                 visitedArr[i] = 0;
+             }
+         }
     }
-
-    dfs(k, 0);
-
-    return maxDungeons;
+    
+    explore(k,0);
+    
+    return maxDungeon
+   
 }
 
