@@ -1,35 +1,38 @@
 function solution(begin, target, words) {
-    
-    function getDiffWords(start, words) {
-      return words.filter(word => {
-        let diffCount = 0;
-        for (let i = 0; i < start.length; i++) {
-          if (start[i] !== word[i]) {
-            diffCount++;
-            if (diffCount > 1) return false; 
-          }
-        }
-        return diffCount === 1;
-  });
-}
+    if (!words.includes(target)) return 0;
 
-    const cntArr = []
-    function dfs(start, cnt, leftWords){
-        if(start === target){
-            cntArr.push(cnt)
+    function getDiff(wordA, wordB){
+        let cnt = 0;
+        for(let i = 0; i < wordA.length; i++){
+            if(wordA[i] !== wordB[i]){
+                cnt++;
+            }
+            if(cnt > 1){
+                return false
+            }
         }
-        const containWords = getDiffWords(start, leftWords);
-        for(let i =0; i < containWords.length; i++){
-            const nextBegin = containWords[i];
-            const leftArr = leftWords.filter((ele)=> ele !== nextBegin)
-            dfs(containWords[i],cnt+1,leftArr)
-        }
+        return true;
     }
-    dfs(begin, 0, words)
-    if(cntArr.length > 0){
-        return Math.min(...cntArr)
-    }else{
-        return 0;
+    
+    const visited = Array(words.length).fill(false)
+    
+    const que = [[begin, 0]];
+    
+    while(que.length > 0){
+        const [currentWord, cnt] = que.shift();
+        
+        if(currentWord === target){
+            return cnt
+        }
+        
+        for(let i = 0; i < words.length; i++){
+            if(!visited[i] && getDiff(currentWord, words[i])){
+                visited[i] = true;
+                que.push([words[i], cnt+1])
+            }
+        }
+
+        
     }
 }
 
