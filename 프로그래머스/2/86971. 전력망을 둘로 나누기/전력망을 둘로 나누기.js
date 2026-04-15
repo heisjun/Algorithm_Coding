@@ -1,44 +1,37 @@
 function solution(n, wires) {
-    let tree = Array.from(Array(n + 1), () => []);
+  // 1. 인접 리스트
+  const graph = {};
+  for (const [a, b] of wires) {
+    if (!graph[a]) graph[a] = [];
+    if (!graph[b]) graph[b] = [];
+    graph[a].push(b);
+    graph[b].push(a);
+  }
 
-    wires.forEach(([start, end]) => {
-        tree[start].push(end);
-        tree[end].push(start);
-    });
+  // 2. DFS
+  function dfs(node, excluded, visited = {}) {
+      visited[node] = true;
+      let count = 1;
 
-    let minDiff = Number.MAX_SAFE_INTEGER;
+      for (const next of graph[node]) {
+        if ((node === excluded[0] && next === excluded[1]) ||
+            (node === excluded[1] && next === excluded[0])) continue;
 
-    function countNodes(startNode, exceptionNode) {
-        let count = 0;
-        let visited = Array(n + 1).fill(false);
-
-        visited[exceptionNode] = true;
-
-        function dfs(currentNode) {
-            visited[currentNode] = true;
-            count++; 
-
-            for (let nextNode of tree[currentNode]) {
-                if (!visited[nextNode]) { 
-                    dfs(nextNode); 
-                }
-            }
+        if (!visited[next]) {
+          count += dfs(next, excluded, visited);
         }
+      }
 
-        dfs(startNode); 
-        return count; 
-    }
+      return count;
+}
 
+  // 3. 완전탐색
+  let answer = Infinity;
+  for (const [a, b] of wires) {
+    const count = dfs(a, [a, b]);
+    const diff = Math.abs(count - (n - count));
+    answer = Math.min(answer, diff);
+  }
 
-    wires.forEach(([v1, v2]) => {
-        let count1 = countNodes(v1, v2);
-
-        let count2 = n - count1;
-
-        let diff = Math.abs(count1 - count2);
-
-        minDiff = Math.min(minDiff, diff);
-    });
-
-    return minDiff;
+  return answer;
 }
