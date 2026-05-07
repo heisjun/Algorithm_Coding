@@ -1,24 +1,24 @@
 function solution(n, times) {
+   let maxTime = Math.max(...times);
     
-    let min = 0;
-    let max = Math.max(...times)*n;
-    let result = 0;
-    
-    while(min <= max){
-        let total = 0;
-        let mid = Math.floor((min+max)/2);
+    let left = 1;
+    let right = maxTime * n;
+    let answer;
+    while(left <=right){
+        const mid = Math.floor((left+right)/2);
         
+        let people = 0;
         times.forEach((time)=>{
-            total += Math.floor(mid/time)
+            people += Math.floor(mid/time)
         })
         
-        if(total >= n){
-            result = mid;
-            max = mid - 1;
+        if(people >= n){
+            answer = mid;
+            right = mid -1;
         }else{
-            min = mid + 1;
+            left = mid + 1;
         }
     }
     
-    return (result)
+    return answer
 }
